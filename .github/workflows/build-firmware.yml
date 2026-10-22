@@ -1,0 +1,32 @@
+
+name: FernoTron ESP32 Firmware
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Quellcode laden
+        uses: actions/checkout@v4
+
+      - name: Python einrichten
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: PlatformIO installieren
+        run: pip install platformio
+
+      - name: ESP32 CC1101 kompilieren
+        working-directory: SIGNALDuino-4.0.0
+        run: pio run -e esp32cc1101
+
+      - name: Firmware bereitstellen
+        uses: actions/upload-artifact@v4
+        with:
+          name: FernoTron-ESP32-CC1101
+          path: SIGNALDuino-4.0.0/.pio/build/esp32cc1101/firmware.bin
+          if-no-files-found: error
